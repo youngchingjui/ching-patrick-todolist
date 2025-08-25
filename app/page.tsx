@@ -42,10 +42,15 @@ export default async function Home() {
   return (
     <div className="font-sans min-h-screen p-8 sm:p-12">
       <main className="mx-auto max-w-2xl flex flex-col gap-8">
-        <h1 className="text-2xl font-semibold">To-do List</h1>
+        <h1 className="text-3xl sm:text-4xl font-semibold bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 bg-clip-text text-transparent">
+          To-do List
+        </h1>
 
         {/* Create */}
-        <form action={createTodo} className="flex flex-col gap-2 rounded-lg border border-black/10 dark:border-white/15 p-4">
+        <form
+          action={createTodo}
+          className="flex flex-col gap-2 rounded-xl border border-black/10 dark:border-white/15 p-4 bg-white/60 dark:bg-white/5 backdrop-blur-md shadow-sm"
+        >
           <div className="flex gap-2">
             <input
               type="text"
@@ -55,7 +60,7 @@ export default async function Home() {
               required
             />
             <SubmitButton
-              className="rounded-md bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="rounded-md bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 text-white px-4 py-2 text-sm font-medium shadow hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400/50 disabled:opacity-60 disabled:cursor-not-allowed"
               pendingChildren="Adding..."
             >
               Add
@@ -74,7 +79,10 @@ export default async function Home() {
             <li className="text-sm text-black/60 dark:text-white/60">No todos yet. Add one above.</li>
           )}
           {todos.map((t) => (
-            <li key={t.id} className="rounded-lg border border-black/10 dark:border-white/15 p-4">
+            <li
+              key={t.id}
+              className="rounded-xl border border-black/10 dark:border-white/15 p-4 bg-white/60 dark:bg-white/5 backdrop-blur-md shadow-sm"
+            >
               <div className="flex items-start gap-3">
                 {/* Toggle */}
                 <form action={toggleTodo.bind(null, t.id)}>

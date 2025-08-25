@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Soft, friendly gradient background (light) */
+  --bg-gradient: radial-gradient(1200px circle at 0% -20%, rgba(56, 189, 248, 0.28), transparent 35%),
+    radial-gradient(900px circle at 100% 0%, rgba(192, 132, 252, 0.22), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #fff8f5 100%);
 }
 
 @theme inline {
@@ -16,11 +20,17 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    /* Subtle, moody gradient background (dark) */
+    --bg-gradient: radial-gradient(1200px circle at 0% -20%, rgba(56, 189, 248, 0.15), transparent 35%),
+      radial-gradient(900px circle at 100% 0%, rgba(192, 132, 252, 0.12), transparent 30%),
+      linear-gradient(180deg, #0a0a0a 0%, #0f0f12 100%);
   }
 }
 
 body {
-  background: var(--background);
+  background: var(--bg-gradient);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  background-attachment: fixed;
 }
+
