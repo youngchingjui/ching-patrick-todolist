@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import prisma from "./lib/prisma";
+import SubmitButton from "./components/SubmitButton";
 
 // Server actions
 async function createTodo(formData: FormData) {
@@ -53,9 +54,12 @@ export default async function Home() {
               className="flex-1 rounded-md border border-black/10 dark:border-white/15 bg-transparent px-3 py-2 outline-none"
               required
             />
-            <button type="submit" className="rounded-md bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90">
+            <SubmitButton
+              className="rounded-md bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+              pendingChildren="Adding..."
+            >
               Add
-            </button>
+            </SubmitButton>
           </div>
           <textarea
             name="description"
@@ -74,16 +78,16 @@ export default async function Home() {
               <div className="flex items-start gap-3">
                 {/* Toggle */}
                 <form action={toggleTodo.bind(null, t.id)}>
-                  <button
-                    type="submit"
+                  <SubmitButton
                     title={t.completed ? "Mark as incomplete" : "Mark as complete"}
                     className={`size-5 rounded border border-black/15 dark:border-white/20 inline-flex items-center justify-center ${
                       t.completed ? "bg-green-600" : "bg-transparent"
-                    }`}
+                    } disabled:opacity-60 disabled:cursor-not-allowed`}
                     aria-pressed={t.completed}
+                    pendingChildren={<span className="text-[10px]">…</span>}
                   >
                     {t.completed ? "✓" : ""}
-                  </button>
+                  </SubmitButton>
                 </form>
 
                 {/* Edit */}
@@ -104,22 +108,25 @@ export default async function Home() {
                       className="rounded-md border border-black/10 dark:border-white/15 bg-transparent px-3 py-2 outline-none resize-y min-h-10"
                     />
                     <div className="flex gap-2 justify-end">
-                      <button type="submit" className="rounded-md border border-black/10 dark:border-white/20 px-3 py-1 text-sm hover:bg-black/5 dark:hover:bg-white/10">
+                      <SubmitButton
+                        className="rounded-md border border-black/10 dark:border-white/20 px-3 py-1 text-sm hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
+                        pendingChildren="Saving..."
+                      >
                         Save
-                      </button>
+                      </SubmitButton>
                     </div>
                   </form>
                 </div>
 
                 {/* Delete */}
                 <form action={deleteTodo.bind(null, t.id)} className="self-start">
-                  <button
-                    type="submit"
-                    className="rounded-md border border-red-500/40 text-red-600 dark:text-red-400 px-3 py-1 text-sm hover:bg-red-500/10"
+                  <SubmitButton
+                    className="rounded-md border border-red-500/40 text-red-600 dark:text-red-400 px-3 py-1 text-sm hover:bg-red-500/10 disabled:opacity-60 disabled:cursor-not-allowed"
                     title="Delete"
+                    pendingChildren="Deleting..."
                   >
                     Delete
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
             </li>
