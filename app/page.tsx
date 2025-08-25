@@ -1,13 +1,23 @@
 import { revalidatePath } from "next/cache";
 import prisma from "./lib/prisma";
 
+// Simple demo auth: get or create a demo user to act as the current user
+async function getCurrentUser() {
+  const existing = await prisma.user.findFirst();
+  if (existing) return existing;
+  return prisma.user.create({
+    data: { email: "demo@example.com", name: "Demo User" },
+  });
+}
+
 // Server actions
 async function createTodo(formData: FormData) {
   "use server";
   const title = String(formData.get("title") || "").trim();
   const description = String(formData.get("description") || "").trim() || undefined;
   if (!title) return;
-  await prisma.todo.create({ data: { title, description } });
+  const user = await getCurrentUser();
+  await prisma.todo.create({ data: { title, description, userId: user.id } });
   revalidatePath("/");
 }
 
@@ -17,7 +27,8 @@ async function updateTodoTitle(id: number, formData: FormData) {
   const descriptionRaw = formData.get("description");
   const description = descriptionRaw !== null ? String(descriptionRaw).trim() : undefined;
   if (!title) return;
-  await prisma.todo.update({ where: { id }, data: { title, description } });
+  const user = await getCurrentUser();
+  await prisma.todo.update({ where: { id }, data: { title, description, updatedById: user.id } });
   revalidatePath("/");
 }
 
@@ -25,7 +36,8 @@ async function toggleTodo(id: number) {
   "use server";
   const todo = await prisma.todo.findUnique({ where: { id } });
   if (!todo) return;
-  await prisma.todo.update({ where: { id }, data: { completed: !todo.completed } });
+  const user = await getCurrentUser();
+  await prisma.todo.update({ where: { id }, data: { completed: !todo.completed, updatedById: user.id } });
   revalidatePath("/");
 }
 
@@ -36,7 +48,7 @@ async function deleteTodo(id: number) {
 }
 
 export default async function Home() {
-  const todos = await prisma.todo.findMany({ orderBy: { createdAt: "desc" } });
+  const todos = await prisma.todo.findMany({ orderBy: { createdAt: "desc" }, include: { user: true, updatedBy: true } });
 
   return (
     <div className="font-sans min-h-screen p-8 sm:p-12">
@@ -109,6 +121,12 @@ export default async function Home() {
                       </button>
                     </div>
                   </form>
+
+                  {/* Meta info */}
+                  <div className="mt-2 text-xs text-black/60 dark:text-white/60">
+                    <div>Created by: {t.user?.name || t.user?.email || "Unknown"}</div>
+                    <div>Last edited by: {t.updatedBy ? (t.updatedBy.name || t.updatedBy.email) : "—"}</div>
+                  </div>
                 </div>
 
                 {/* Delete */}

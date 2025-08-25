@@ -18,6 +18,7 @@ model User {
   name      String?
 
   todos     Todo[]
+  edited    Todo[]   @relation("TodoUpdatedBy")
 }
 
 model Todo {
@@ -28,7 +29,11 @@ model Todo {
   description String?
   completed   Boolean  @default(false)
 
-  // relation to owner
+  // relation to owner/creator
   user        User?    @relation(fields: [userId], references: [id])
   userId      Int?
+
+  // relation to last editor
+  updatedBy   User?    @relation("TodoUpdatedBy", fields: [updatedById], references: [id])
+  updatedById Int?
 }
